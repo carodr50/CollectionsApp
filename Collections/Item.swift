@@ -11,15 +11,15 @@ import SwiftData
 @Model final class Item : Identifiable {
     var id : String
     var pName : String
-    var pCost : Decimal
+    var pCost : Double
     var pAmount : Int
-    var pImage : String
+    //var pImage : String
     
-    init(id: String, pName: String, pCost: Decimal, pAmount: Int, pImage: String) {
+    init(id: String, pName: String, pCost: Double, pAmount: Int) {
         self.id = id
         self.pName = pName
         self.pCost = pCost
         self.pAmount = pAmount
-        self.pImage = pImage
+        //self.pImage = pImage
     }
 }
