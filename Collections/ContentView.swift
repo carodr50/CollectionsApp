@@ -13,8 +13,8 @@ struct ContentView: View {
     @State private var addActive = false
     @State private var addUPC : String = ""
     @State private var addPName : String = ""
-    @State private var addPCost : Double = 0
-    @State private var addPQuantity : Int = 0
+    @State private var addPCost : Double?
+    @State private var addPAmount : Int?
     @Query private var items: [Item]
 
     var body: some View {
@@ -28,10 +28,24 @@ struct ContentView: View {
                                 .minimumScaleFactor(0.5)
                             Text("$\(item.pCost, specifier: "%.2f")")
                         }
+                        
+                        Text("x\(item.pAmount)")
+                            .foregroundColor(Color.gray)
+                            .multilineTextAlignment(.trailing)
                     }
-                }
-            }.toolbar {
+                }.onDelete(perform: {
+                        for index in IndexSet($0) {
+                            let item = items[index]
+                            modelContext.delete(item)
+                        }
+                })
+            }.navigationTitle("Current Collection")
+                .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    EditButton()
+                }
+                ToolbarItem {
                     Button {
                         addActive = true;
                     } label: {
@@ -42,10 +56,10 @@ struct ContentView: View {
                 TextField("Item Name", text: $addPName)
                 TextField("UPC", text: $addUPC)
                 TextField("Cost", value: $addPCost, format: .number.precision(.fractionLength(2)))
-                TextField("Quantity", value: $addPQuantity, format: .number)
+                TextField("Quantity", value: $addPAmount, format: .number)
                 Button("Add") {
                     withAnimation {
-                        let newItem = Item(id: addUPC, pName: addPName, pCost: (addPCost), pAmount: addPQuantity)
+                        let newItem = Item(id: addUPC, pName: addPName, pCost: addPCost!, pAmount: addPAmount!)
                         modelContext.insert(newItem)
                         addActive = false
                     }
